@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Converts between numeric IDs and Sqids (Sqids 3.1.0 package) using the
+# alphabet, minLength and blocklist configured in ~/.config/sqid-convert/config.json.
+# On the first run (no config) the values are prompted interactively.
+#
+# Usage:
+#   sqid-convert -c | --config      -> (re)configure alphabet/minLength/blocklist
+#   sqid-convert <numeric_id>       -> print the matching sqid
+#   sqid-convert <sqid>             -> print the matching numeric id
+#   sqid-convert encode <id>        -> force encode
+#   sqid-convert decode <sqid>      -> force decode
+set -euo pipefail
+
+SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "$SOURCE" ]]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+PY_SCRIPT="$SCRIPT_DIR/sqid_convert.py"
+
+config_flag=()
+if [[ "${1:-}" == "-c" || "${1:-}" == "--config" ]]; then
+  config_flag=(--config)
+  shift
+  if [[ $# -eq 0 ]]; then
+    exec python3 "$PY_SCRIPT" "${config_flag[@]}"
+  fi
+fi
+
+if [[ $# -eq 2 ]]; then
+  mode="$1"
+  value="$2"
+elif [[ $# -eq 1 ]]; then
+  value="$1"
+  if [[ "$value" =~ ^[0-9]+$ ]]; then
+    mode="encode"
+  else
+    mode="decode"
+  fi
+else
+  echo "Usage: sqid-convert [-c|--config] <numeric_id|sqid>" >&2
+  echo "       sqid-convert -c|--config" >&2
+  echo "       sqid-convert encode <numeric_id>" >&2
+  echo "       sqid-convert decode <sqid>" >&2
+  exit 1
+fi
+
+exec python3 "$PY_SCRIPT" "${config_flag[@]}" "$mode" "$value"
