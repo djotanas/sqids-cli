@@ -4,10 +4,24 @@ CLI to convert numeric IDs ↔ [Sqids](https://sqids.org/), replicating the enco
 
 ## Installation
 
+```bash
+curl -fsSL https://raw.githubusercontent.com/djotanas/sqids-cli/main/install.sh | bash
+```
+
+This downloads `sqid-convert` and `sqid_convert.py` into `~/.local/bin` (override with `INSTALL_DIR=...`). Run it again to update.
+
+To uninstall (your config is kept):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/djotanas/sqids-cli/main/install.sh | bash -s -- --uninstall
+```
+
+### From a clone
+
 Run from the directory where you want the repository to live (the symlink uses `$PWD`):
 
 ```bash
-git clone git@github.com:djotanas/sqids-cli.git
+git clone https://github.com/djotanas/sqids-cli.git
 ln -s "$PWD/sqids-cli/sqid-convert" ~/.local/bin/sqid-convert
 ```
 
