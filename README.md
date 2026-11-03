@@ -1,6 +1,15 @@
 # sqids-cli
 
-CLI to convert numeric IDs ↔ [Sqids](https://sqids.org/), replicating the encoder of the **Sqids 3.1.0** NuGet package. Requires only `bash` and `python3`, no external dependencies.
+CLI to convert numeric IDs ↔ [Sqids](https://sqids.org/), replicating the encoder of the **Sqids 3.1.0** NuGet package. Works on Linux, macOS, WSL and Windows (PowerShell / cmd). Requires only Python 3, no external dependencies.
+
+**Quick install**
+
+| System                     | Command                                                                                          |
+|----------------------------|--------------------------------------------------------------------------------------------------|
+| Linux / macOS / WSL (bash) | `curl -fsSL https://raw.githubusercontent.com/djotanas/sqids-cli/main/install.sh \| bash`        |
+| Windows (PowerShell)       | `irm https://raw.githubusercontent.com/djotanas/sqids-cli/main/install.ps1 \| iex`               |
+
+Details, `PATH` notes and uninstall instructions below.
 
 ## Installation
 
@@ -44,7 +53,7 @@ To uninstall (removes the `PATH` entry; your config in `%USERPROFILE%\.config\sq
 
 ### From a clone
 
-Run from the directory where you want the repository to live (the symlink uses `$PWD`):
+**Linux / macOS / WSL:** run from the directory where you want the repository to live (the symlink uses `$PWD`):
 
 ```bash
 git clone https://github.com/djotanas/sqids-cli.git
@@ -53,7 +62,16 @@ ln -s "$PWD/sqids-cli/sqid-convert" ~/.local/bin/sqid-convert
 
 The wrapper resolves the symlink and finds `sqid_convert.py` next to it.
 
+**Windows (PowerShell):** call the Python script directly (use `python` instead of `py` if you don't have the Python launcher):
+
+```powershell
+git clone https://github.com/djotanas/sqids-cli.git
+py sqids-cli\sqid_convert.py <numeric_id|sqid>
+```
+
 ## Usage
+
+The same commands work in bash, PowerShell and `cmd.exe`:
 
 ```bash
 sqid-convert <numeric_id>      # encode
