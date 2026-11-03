@@ -12,6 +12,7 @@ used, filtered by the alphabet.
 import ast
 import json
 import os
+import re
 import sys
 
 CONFIG_PATH = os.path.join(
@@ -843,14 +844,23 @@ def configure(current):
     return config
 
 
+USAGE = """Usage: sqid-convert [-c|--config] <numeric_id|sqid>
+       sqid-convert -c|--config
+       sqid-convert encode <numeric_id>
+       sqid-convert decode <sqid>"""
+
+
 def main(argv):
     reconfigure = False
     if argv and argv[0] in ("-c", "--config"):
         reconfigure = True
         argv = argv[1:]
 
+    if len(argv) == 1:
+        # A bare value: digits are encoded, anything else is decoded.
+        argv = ["encode" if re.fullmatch(r"[0-9]+", argv[0]) else "decode", argv[0]]
     if argv and (len(argv) != 2 or argv[0] not in ("encode", "decode")):
-        print("Usage: sqid_convert.py [-c|--config] [encode <numeric_id> | decode <sqid>]", file=sys.stderr)
+        print(USAGE, file=sys.stderr)
         return 1
 
     config = load_config()

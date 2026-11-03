@@ -20,31 +20,6 @@ done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 PY_SCRIPT="$SCRIPT_DIR/sqid_convert.py"
 
-config_flag=()
-if [[ "${1:-}" == "-c" || "${1:-}" == "--config" ]]; then
-  config_flag=(--config)
-  shift
-  if [[ $# -eq 0 ]]; then
-    exec python3 "$PY_SCRIPT" "${config_flag[@]}"
-  fi
-fi
-
-if [[ $# -eq 2 ]]; then
-  mode="$1"
-  value="$2"
-elif [[ $# -eq 1 ]]; then
-  value="$1"
-  if [[ "$value" =~ ^[0-9]+$ ]]; then
-    mode="encode"
-  else
-    mode="decode"
-  fi
-else
-  echo "Usage: sqid-convert [-c|--config] <numeric_id|sqid>" >&2
-  echo "       sqid-convert -c|--config" >&2
-  echo "       sqid-convert encode <numeric_id>" >&2
-  echo "       sqid-convert decode <sqid>" >&2
-  exit 1
-fi
-
-exec python3 "$PY_SCRIPT" "${config_flag[@]}" "$mode" "$value"
+# Argument parsing (including encode/decode auto-detection) lives in the
+# Python script, which is shared with the Windows wrapper (sqid-convert.cmd).
+exec python3 "$PY_SCRIPT" "$@"
