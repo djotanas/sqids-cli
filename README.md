@@ -4,16 +4,42 @@ CLI to convert numeric IDs ↔ [Sqids](https://sqids.org/), replicating the enco
 
 ## Installation
 
+### Linux / macOS / WSL (bash)
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/djotanas/sqids-cli/main/install.sh | bash
 ```
 
 This downloads `sqid-convert` and `sqid_convert.py` into `~/.local/bin` (override with `INSTALL_DIR=...`). Run it again to update.
 
-To uninstall (your config is kept):
+If that directory is not in your `PATH`, the installer adds it to your shell startup files (`~/.bashrc`, `~/.zshrc`, `~/.profile`, … inside a `# >>> sqid-convert >>>` block). New terminals pick it up automatically. **The terminal you ran the installer in has to be reloaded once:**
+
+```bash
+exec "$SHELL"
+```
+
+Why: `curl … | bash` runs the installer in a child process, and a child process cannot change the environment (`PATH`) of the shell that started it. That is an OS rule, not something the script can work around. Set `NO_MODIFY_PATH=1` to keep your startup files untouched.
+
+To uninstall (removes the `PATH` block too; your config is kept):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/djotanas/sqids-cli/main/install.sh | bash -s -- --uninstall
+```
+
+### Windows (PowerShell)
+
+Requires Python 3 ([python.org](https://www.python.org/downloads/) or `winget install Python.Python.3.12`).
+
+```powershell
+irm https://raw.githubusercontent.com/djotanas/sqids-cli/main/install.ps1 | iex
+```
+
+This installs `sqid_convert.py` and a `sqid-convert.cmd` launcher into `%LOCALAPPDATA%\Programs\sqid-convert` (override with `$env:INSTALL_DIR`) and adds that directory to your user `PATH`. Because `iex` runs in the current session, `sqid-convert` works right away in the same window, as well as in new PowerShell and `cmd.exe` windows. The `.cmd` launcher is not affected by the PowerShell execution policy.
+
+To uninstall (removes the `PATH` entry; your config in `%USERPROFILE%\.config\sqid-convert` is kept):
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/djotanas/sqids-cli/main/install.ps1))) -Uninstall
 ```
 
 ### From a clone
